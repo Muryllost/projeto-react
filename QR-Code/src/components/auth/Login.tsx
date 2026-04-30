@@ -26,7 +26,7 @@ const Login: React.FC = () => {
   return (
     <main className="container-login">
       <span className="material-symbols-outlined icone-grande">inventory</span>
-      <h1>Controlo de Logística</h1>
+      <h1>Controle de Logística</h1>
       <p>Identifica-te para começar</p>
       <form onSubmit={handleLogin}>
         <div className="input-wrapper">

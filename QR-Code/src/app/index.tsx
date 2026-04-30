@@ -3,8 +3,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Login from "../components/auth/Login";
 import Cadastro from "../components/auth/Cadastro";
-import Scanner from "../components/scanner/scanner";
-import Estoque from "../components/estoque/estoque";
+import Scanner from "../components/scanner/Scanner";
+import Estoque from "../components/estoque/Estoque";
 
 const App: React.FC = () => {
   return (
