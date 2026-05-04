@@ -3,7 +3,7 @@ import axios, { AxiosError } from "axios";
 // Configuração centralizada do Axios para consumir a API
 // Conforme solicitado: baseURL fixa para o IP local, timeout e headers padrão
 export const api = axios.create({
-  baseURL: "https://preparavest-backend.onrender.com",
+  baseURL: "https://scanstock-back.onrender.com",
   timeout: 5000,
   headers: { "Content-Type": "application/json" },
 });
