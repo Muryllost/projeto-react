@@ -1,25 +1,45 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext"; // Importamos o contexto
+import { OperadorService } from "../../service/operador.service"; // Importamos o serviço
 import "./Auth.css";
 
 const Login: React.FC = () => {
   const [nome, setNome] = useState<string>("");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (localStorage.getItem("usuarioQR")) navigate("/scanner");
-  }, [navigate]);
+  // Olha como fica limpo:
+  const { login, isAuthenticated } = useAuth();
 
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const operadores: string[] = JSON.parse(
-      localStorage.getItem("listaOperadores") || "[]",
-    );
-    if (operadores.includes(nome) || operadores.length === 0) {
-      localStorage.setItem("usuarioQR", nome);
+  // Se já estiver logado, vai para o scanner
+  useEffect(() => {
+    if (isAuthenticated) {
       navigate("/scanner");
-    } else {
-      alert("Operador não encontrado! Por favor, efetua o registo primeiro.");
+    }
+  }, [isAuthenticated, navigate]);
+
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      // 1. Pede ao Back-end a lista de todos os operadores cadastrados
+      const listaOperadores = await OperadorService.listarTodos();
+
+      // 2. Procura se o nome digitado existe na lista que veio do banco
+      const operadorEncontrado = listaOperadores.find(
+        (op: any) => op.nome.toLowerCase() === nome.trim().toLowerCase(),
+      );
+
+      if (operadorEncontrado) {
+        // 3. Se existir, usa o nosso AuthContext para logar
+        login(operadorEncontrado);
+        navigate("/scanner");
+      } else {
+        alert("Operador não encontrado! Por favor, efetua o registo primeiro.");
+      }
+    } catch (error) {
+      console.error("Erro ao validar login:", error);
+      alert("Erro ao conectar com o banco de dados.");
     }
   };
 
@@ -54,4 +74,5 @@ const Login: React.FC = () => {
     </main>
   );
 };
+
 export default Login;

@@ -1,21 +1,33 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { OperadorService } from "../../service/operador.service"; // Importamos o mensageiro
+import type { Operador } from "../../types"; // Importamos o molde
 import "./Auth.css";
 
 const Cadastro: React.FC = () => {
   const [nome, setNome] = useState<string>("");
   const navigate = useNavigate();
 
-  const handleCadastro = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleCadastro = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     if (nome.trim() !== "") {
-      const operadores: string[] = JSON.parse(
-        localStorage.getItem("listaOperadores") || "[]",
-      );
-      operadores.push(nome.trim());
-      localStorage.setItem("listaOperadores", JSON.stringify(operadores));
-      alert("Operador registado com sucesso!");
-      navigate("/");
+      try {
+        // 1. Criamos o objeto no formato correto do banco
+        const novoOperador: Operador = {
+          nome: nome.trim(),
+          status: "1", // '1' para ativo
+        };
+
+        // 2. Enviamos para o Back-end real
+        await OperadorService.cadastrar(novoOperador);
+
+        alert("Operador registado com sucesso!");
+        navigate("/"); // Redireciona para o login
+      } catch (error) {
+        console.error("Erro ao cadastrar operador:", error);
+        alert("Ops! Ocorreu um erro ao comunicar com o servidor.");
+      }
     }
   };
 
@@ -50,4 +62,5 @@ const Cadastro: React.FC = () => {
     </main>
   );
 };
+
 export default Cadastro;
