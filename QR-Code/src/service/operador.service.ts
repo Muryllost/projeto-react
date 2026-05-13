@@ -6,7 +6,7 @@ export const OperadorService = {
   // Envia os dados para cadastrar um novo operador no Back-end
   cadastrar: async (dados: Operador) => {
     try {
-      const response = await api.post("/operadores", dados);
+      const response = await api.post("/operador", dados);
       return response.data;
     } catch (error) {
       console.error("Erro ao cadastrar operador:", error);
